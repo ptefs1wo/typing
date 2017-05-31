@@ -15,7 +15,7 @@
 		let i;
 		let isrunnner=false;
 		$(document).keydown(function(e){
-			if(e.keyCode==32&&!isrunnner){
+			if((e.keyCode==32||e.keyCode==229)&&!isrunnner){
 				isrunnner=true;
 				$('#navi').text(3);
 				i=0;
@@ -32,12 +32,6 @@
 			}
 			if(e.keyCode==13&&isrunnner){
 				if(i<=4) typeJadge(e);
-				if(i>4&&e.keyCode==229){
-					setTimeout(function(){$('#typearea').val("");},10);
-					rndtext=typetext();
-					i=0;
-					$('#navi').text(rndtext);
-				}
 			}
 		}).on('paste','#typearea',function(){
 			return false;
@@ -56,7 +50,7 @@
 				i++;
 				if(i>4){
 					$('#typearea').attr('disabled','disabled');
-					$('#navi').html('GAME CLEAR!<br>もういちど全角でスペースキーを押すとリスタート');
+					$('#navi').html('GAME CLEAR!<br>もういちどスペースキーを押すとリスタート');
 					i=0;
 					isrunnner=false;
 				}
