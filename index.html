@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>タイピングゲーム</title>
+</head>
+<body>
+	<h1>タイピングゲーム</h1>
+	<hr>
+	<p id="navi">スペースキーを押すとスタートします</p>
+	<input type="text" id="typearea" disabled="disabled">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		let rndtext=typetext();
+		let i;
+		let isrunnner=false;
+		$(document).keydown(function(e){
+			if(e.keyCode==32&&!isrunnner){
+				isrunnner=true;
+				$('#navi').text(3);
+				i=0;
+				setTimeout(function(){
+					$('#navi').text(2);
+				},1000);
+				setTimeout(function(){
+					$('#navi').text(1);
+				},2000);
+				setTimeout(function(){
+					$('#navi').text(rndtext);
+					$('#typearea').val("").removeAttr('disabled').focus();
+				},3000);
+			}
+			if(e.keyCode==13&&isrunnner){
+				if(i<=4) typeJadge(e);
+				if(i>4&&e.keyCode==229){
+					setTimeout(function(){$('#typearea').val("");},10);
+					rndtext=typetext();
+					i=0;
+					$('#navi').text(rndtext);
+				}
+			}
+		}).on('paste','#typearea',function(){
+			return false;
+		});
+		function typetext(){
+			const textbox=['りんご','ごりら','らっぱ','りぼん','しまね','おふろ'];
+			let rndtext=textbox[Math.floor(Math.random()*textbox.length)];
+			return rndtext;
+		}
+		function typeJadge(e){
+			if($('#typearea').val()==rndtext){
+				console.log('clear');
+				$('#typearea').val("");
+				rndtext=typetext();
+				$('#navi').text(rndtext);
+				i++;
+				if(i>4){
+					$('#typearea').attr('disabled','disabled');
+					$('#navi').html('GAME CLEAR!<br>もういちど全角でスペースキーを押すとリスタート');
+					i=0;
+					isrunnner=false;
+				}
+			}
+		}
+	</script>
+</body>
+</html>
