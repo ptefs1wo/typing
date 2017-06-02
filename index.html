@@ -7,17 +7,20 @@
 <body>
 	<h1>タイピングゲーム</h1>
 	<hr>
-	<p id="navi">スペースキーを押すとスタートします</p>
+	<p id="navi">C:単語モード N:数字モード</p>
 	<input type="text" id="typearea" disabled="disabled">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script>
-		let rndtext=typetext();
+		let rndtext;
+		let qtype;
 		let i;
 		let isrunnner=false;
 		let starttime;
 		$(document).keydown(function(e){
-			if((e.keyCode==32||e.keyCode==229)&&!isrunnner){
+			if((e.keyCode==67||e.keyCode==78)&&!isrunnner){
 				isrunnner=true;
+				qtype=e.keyCode;
+				rndtext=typeText(qtype);
 				starttime=Date.now();
 				$('#navi').attr('disabled','disabled').text(3);
 				i=0;
@@ -38,21 +41,34 @@
 		}).on('paste','#typearea',function(){
 			return false;
 		});
-		function typetext(){
-			const textbox=['りんご','ごりら','らっぱ','りぼん','しまね','おふろ','まんが','あさり','うさぎ'];
-			let rndtext=textbox[Math.floor(Math.random()*textbox.length)];
-			return rndtext;
+		function typeText(qtype){
+			if(qtype==67){
+				const textbox=['りんご','ごりら','らっぱ','りぼん','しまね','おふろ','まんが','あさり','うさぎ'];
+				let rndtext=textbox[Math.floor(Math.random()*textbox.length)];
+				return rndtext;
+			}
+			if(qtype==78){
+				let num="1234567890";
+				let randomnum="";
+				let i=0;
+				while(i<6){
+					randomnum+=num[Math.floor(Math.random()*num.length)];
+					i++;
+				}
+				return randomnum;
+			}
+			else null;
 		}
 		function typeJadge(e){
 			if($('#typearea').val()==rndtext){
 				$('#typearea').val("");
-				rndtext=typetext();
+				rndtext=typeText(qtype);
 				$('#navi').html((i+1)+"clear!<br>"+rndtext);
 				i++;
 				if(i>4){
 					let mtime=((Date.now()-starttime)/1000).toFixed(2);
 					$('#typearea').attr('disabled','disabled');
-					$('#navi').html("GAME CLEAR!<br>記録:"+mtime+"秒<br>もういちどスペースキーを押すとリスタート");
+					$('#navi').html("GAME CLEAR!<br>記録:"+mtime+"秒<br>C:単語モード N:数字モード");
 					i=0;
 					isrunnner=false;
 				}
