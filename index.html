@@ -14,9 +14,11 @@
 		let rndtext=typetext();
 		let i;
 		let isrunnner=false;
+		let starttime;
 		$(document).keydown(function(e){
 			if((e.keyCode==32||e.keyCode==229)&&!isrunnner){
 				isrunnner=true;
+				starttime=Date.now();
 				$('#navi').text(3);
 				i=0;
 				setTimeout(function(){
@@ -43,14 +45,14 @@
 		}
 		function typeJadge(e){
 			if($('#typearea').val()==rndtext){
-				console.log('clear');
 				$('#typearea').val("");
 				rndtext=typetext();
-				$('#navi').text(rndtext);
+				$('#navi').html((i+1)+"clear!<br>"+rndtext);
 				i++;
 				if(i>4){
+					let mtime=((Date.now()-starttime)/1000).toFixed(2);
 					$('#typearea').attr('disabled','disabled');
-					$('#navi').html('GAME CLEAR!<br>もういちどスペースキーを押すとリスタート');
+					$('#navi').html("GAME CLEAR!<br>記録:"+mtime+"秒<br>もういちどスペースキーを押すとリスタート");
 					i=0;
 					isrunnner=false;
 				}
