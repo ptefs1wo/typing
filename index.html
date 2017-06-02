@@ -19,7 +19,7 @@
 			if((e.keyCode==32||e.keyCode==229)&&!isrunnner){
 				isrunnner=true;
 				starttime=Date.now();
-				$('#navi').text(3);
+				$('#navi').attr('disabled','disabled').text(3);
 				i=0;
 				setTimeout(function(){
 					$('#navi').text(2);
@@ -39,7 +39,7 @@
 			return false;
 		});
 		function typetext(){
-			const textbox=['りんご','ごりら','らっぱ','りぼん','しまね','おふろ'];
+			const textbox=['りんご','ごりら','らっぱ','りぼん','しまね','おふろ','まんが','あさり','うさぎ'];
 			let rndtext=textbox[Math.floor(Math.random()*textbox.length)];
 			return rndtext;
 		}
