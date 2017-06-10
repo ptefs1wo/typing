@@ -7,6 +7,7 @@
 <body>
 	<h1>タイピングゲーム</h1>
 	<hr>
+	<input type="range" max="9" min="1" id="men"><span>5人</span>
 	<p id="navi">C:単語モード N:数字モード</p>
 	<input type="text" id="typearea" disabled="disabled">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -16,24 +17,33 @@
 		let i;
 		let isrunnner=false;
 		let starttime;
+		let men=$('#men').val();
+		let serial=1;
+		const ranking=[];
+		$('#men').change(function(){
+			$('span').text($('#men').val()+"人");
+			men=$('#men').val();
+		});
 		$(document).keydown(function(e){
-			if((e.keyCode==67||e.keyCode==78)&&!isrunnner){
-				isrunnner=true;
-				qtype=e.keyCode;
-				rndtext=typeText(qtype);
-				starttime=Date.now();
-				$('#navi').attr('disabled','disabled').text(3);
-				i=0;
-				setTimeout(function(){
-					$('#navi').text(2);
-				},1000);
-				setTimeout(function(){
-					$('#navi').text(1);
-				},2000);
-				setTimeout(function(){
-					$('#navi').text(rndtext);
-					$('#typearea').val("").removeAttr('disabled').focus();
-				},3000);
+			if(((e.keyCode==67||e.keyCode==78)&&!isrunnner&&qtype==null)||(e.keyCode==qtype&&isrunnner)){
+					isrunnner=true;
+					men--;
+					qtype=e.keyCode;
+					$('#men').css('display','none');
+					rndtext=typeText(qtype);
+					starttime=Date.now();
+					$('#navi').attr('disabled','disabled').text(3);
+					i=0;
+					setTimeout(function(){
+						$('#navi').text(2);
+					},1000);
+					setTimeout(function(){
+						$('#navi').text(1);
+					},2000);
+					setTimeout(function(){
+						$('#navi').text(rndtext);
+						$('#typearea').val("").removeAttr('disabled').focus();
+					},3000);
 			}
 			if(e.keyCode==13&&isrunnner){
 				if(i<=4) typeJadge(e);
@@ -65,11 +75,47 @@
 				rndtext=typeText(qtype);
 				$('#navi').html((i+1)+"clear!<br>"+rndtext);
 				i++;
-				if(i>4){
+				if(i>4&&men>0){
 					let mtime=((Date.now()-starttime)/1000).toFixed(2);
+					ranking.push([serial,mtime]);
 					$('#typearea').attr('disabled','disabled');
-					$('#navi').html("GAME CLEAR!<br>記録:"+mtime+"秒<br>C:単語モード N:数字モード");
+					$('#navi').html("交代してください。最初に選んだモードのキーでスタートです。");
 					i=0;
+					serial++;
+				}
+				if(i>4&&men<=0){
+					let mtime=((Date.now()-starttime)/1000).toFixed(2);
+					ranking.push([serial,mtime]);
+					$('#typearea').attr('disabled','disabled');
+					$('#men').css('display','icnline');
+					let j=ranking.length;
+					while(j>0){
+						let k=0;
+						while(k<j){
+							if(ranking[k[0]]>ranking[k+1[0]]){
+								let tmp=ranking[k[0]];
+								ranking[k[0]]=ranking[k+1[0]];
+								ranking[k+1[0]]=tmp;
+							}
+							k++;
+						}
+						j--;
+					}
+					let rankhtml="";
+					j=0;
+					while(j<ranking.length){
+						rankhtml+=(j+1)+"位:"+ranking[j][0]+"番目のプレイヤー:"+ranking[j][1]+"秒<br>";
+						j++;
+					}
+					$('#navi').html("全員終了<br>"+rankhtml+"もういちどするならC:単語モード N:数字モード");
+					men=0;
+					qtype=null;
+					//配列初期化
+					j=0;
+					while(j<ranking.length){
+						ranking.pop(ranking[j]);
+						j++;
+					}
 					isrunnner=false;
 				}
 			}
